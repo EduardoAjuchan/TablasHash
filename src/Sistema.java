@@ -1,12 +1,8 @@
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class Sistema {
 
@@ -111,26 +107,112 @@ public class Sistema {
     }
 
     public Pais buscarPais(String isoCode) {
-        long startTime = System.nanoTime();
+    long startTime = System.nanoTime();
 
-        Pais pais = paisesMap.get(isoCode);
+    Pais pais = paisesMap.get(isoCode);
 
-        long endTime = System.nanoTime();
-        long elapsedTime = endTime - startTime;
+    long endTime = System.nanoTime();
+    long elapsedTime = endTime - startTime;
 
-        // Imprimir el tiempo transcurrido en milisegundos (opcional)
-        System.out.println("Tiempo de búsqueda de país: " + elapsedTime / 1000000 + " milisegundos");
+    System.out.println("Tiempo de búsqueda de país: " + elapsedTime / 1000000 + " milisegundos");
 
-        return pais;
+    if (pais != null) {
+        System.out.println("País encontrado: " + pais.getNombre());
+        boolean hasStates = false;
+        for (Estado estado : estadosMap.values()) {
+            if (estado.getIdPais() == pais.getId()) {
+                if (!hasStates) {
+                    System.out.println("Estados:");
+                    hasStates = true;
+                }
+                System.out.println(" - " + estado.getNombre());
+                boolean hasMunicipios = false;
+                for (Municipio municipio : municipiosMap.values()) {
+                    if (municipio.getIdEstado() == estado.getId()) {
+                        if (!hasMunicipios) {
+                            System.out.println("   Municipios:");
+                            hasMunicipios = true;
+                        }
+                        System.out.println("     - " + municipio.getNombre());
+                    }
+                }
+            }
+        }
+        if (!hasStates) {
+            System.out.println("No se encontraron estados para este país.");
+        }
+    } else {
+        System.out.println("País no encontrado.");
     }
+
+    return pais;
+}
 
     public Estado buscarEstado(int idEstado) {
-        return estadosMap.get(idEstado);
+    long startTime = System.nanoTime();
+
+    Estado estado = estadosMap.get(idEstado);
+
+    long endTime = System.nanoTime();
+    long elapsedTime = endTime - startTime;
+
+    System.out.println("Tiempo de búsqueda de estado: " + elapsedTime / 1000000 + " milisegundos");
+
+    if (estado != null) {
+        System.out.println("Estado encontrado: " + estado.getNombre());
+        // Buscar el país asociado con el estado
+        for (Pais pais : paisesMap.values()) {
+            if (pais.getId() == estado.getIdPais()) {
+                System.out.println("Pertenece al país: " + pais.getNombre());
+                break;
+            }
+        }
+        // Buscar los municipios asociados con el estado
+        System.out.println("Municipios:");
+        for (Municipio municipio : municipiosMap.values()) {
+            if (municipio.getIdEstado() == estado.getId()) {
+                System.out.println(" - " + municipio.getNombre());
+            }
+        }
+    } else {
+        System.out.println("Estado no encontrado.");
     }
 
+    return estado;
+}
+
     public Municipio buscarMunicipio(int idMunicipio) {
-        return municipiosMap.get(idMunicipio);
+    long startTime = System.nanoTime();
+
+    Municipio municipio = municipiosMap.get(idMunicipio);
+
+    long endTime = System.nanoTime();
+    long elapsedTime = endTime - startTime;
+
+    System.out.println("Tiempo de búsqueda de municipio: " + elapsedTime / 1000000 + " milisegundos");
+
+    if (municipio != null) {
+        System.out.println("Municipio encontrado: " + municipio.getNombre());
+        // Buscar el estado asociado con el municipio
+        for (Estado estado : estadosMap.values()) {
+            if (estado.getId() == municipio.getIdEstado()) {
+                System.out.println("Pertenece al estado: " + estado.getNombre());
+                // Buscar el país asociado con el estado
+                for (Pais pais : paisesMap.values()) {
+                    if (pais.getId() == estado.getIdPais()) {
+                        System.out.println("Pertenece al país: " + pais.getNombre());
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+    } else {
+        System.out.println("Municipio no encontrado.");
     }
+
+    return municipio;
+}
 
     @Override
     public String toString() {

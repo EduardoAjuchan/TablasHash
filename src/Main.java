@@ -7,12 +7,17 @@ public class Main {
         mostrarMenuBusqueda(sistema);
     }
     private static void mostrarMenuBusqueda(Sistema sistema) {
-        Scanner scanner = new Scanner(System.in);
+    Scanner scanner = new Scanner(System.in);
+    int opcion;
+    String continuar;
+
+    do {
         System.out.println("¿Qué tipo de búsqueda deseas realizar?");
         System.out.println("1. Búsqueda por país");
         System.out.println("2. Búsqueda por estado");
         System.out.println("3. Búsqueda por municipio");
-        int opcion = scanner.nextInt();
+        System.out.println("5. Salir");
+        opcion = scanner.nextInt();
 
         switch (opcion) {
             case 1:
@@ -45,8 +50,16 @@ public class Main {
                     System.out.println("Municipio no encontrado.");
                 }
                 break;
+            case 5:
+                System.out.println("Saliendo del programa...");
+                return;
             default:
                 System.out.println("Opción inválida.");
         }
-    }
+
+        System.out.println("¿Desea volver al menú? (S/N)");
+        continuar = scanner.next();
+    } while (continuar.equalsIgnoreCase("S"));
+    System.out.println("Saliendo del programa...");
+}
 }
