@@ -1,8 +1,10 @@
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class Sistema {
 
@@ -141,13 +143,20 @@ public class Sistema {
         if (!hasStates) {
             System.out.println("No se encontraron estados para este país.");
         }
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("¿Desea exportar los resultados a un archivo Excel? (S/N)");
+        String respuesta = scanner.nextLine();
+        if (respuesta.equalsIgnoreCase("S")) {
+            String filePath = "C:\\Users\\eduar\\Desktop\\Prueba\\resultados.xlsx";
+            exportarResultadosBusqueda(filePath, pais);
+        }
+
+        return pais;
     } else {
         System.out.println("País no encontrado.");
+        return null;
     }
-
-    return pais;
 }
-
     public Estado buscarEstado(int idEstado) {
     long startTime = System.nanoTime();
 
@@ -213,7 +222,45 @@ public class Sistema {
 
     return municipio;
 }
+  public void exportarResultadosBusqueda(String filePath, Pais pais) {
+    Workbook workbook = new XSSFWorkbook();
+    Sheet sheet = workbook.createSheet("Resultados de la búsqueda");
 
+    // Crear encabezados
+    Row headerRow = sheet.createRow(0);
+    headerRow.createCell(0).setCellValue("País");
+    headerRow.createCell(1).setCellValue("Estado");
+    headerRow.createCell(2).setCellValue("Municipio");
+    headerRow.createCell(3).setCellValue("Tiempo de búsqueda (ms)");
+
+    int rowNum = 1;
+    for (Map.Entry<Integer, Estado> estadoEntry : estadosMap.entrySet()) {
+        Estado estado = estadoEntry.getValue();
+        if (estado.getIdPais() == pais.getId()) {
+            for (Map.Entry<Integer, Municipio> municipioEntry : municipiosMap.entrySet()) {
+                Municipio municipio = municipioEntry.getValue();
+                if (municipio.getIdEstado() == estado.getId()) {
+                    long startTime = System.nanoTime();
+                    // Aquí es donde realizarías la búsqueda
+                    long endTime = System.nanoTime();
+                    long elapsedTime = endTime - startTime;
+
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(pais.getNombre());
+                    row.createCell(1).setCellValue(estado.getNombre());
+                    row.createCell(2).setCellValue(municipio.getNombre());
+                    row.createCell(3).setCellValue(elapsedTime / 1000000.0); // Tiempo de búsqueda en milisegundos
+                }
+            }
+        }
+    }
+
+    try (FileOutputStream fos = new FileOutputStream(filePath)) {
+        workbook.write(fos);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
     @Override
     public String toString() {
         return "Sistema{" +

@@ -8,7 +8,9 @@ public class Municipio {
     private String nombre;
 
 
-    public Municipio() {
+    public Municipio(int idEstado, String nombre) {
+        this.idEstado = idEstado;
+        this.nombre = nombre;
     }
 
 

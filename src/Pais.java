@@ -9,7 +9,11 @@ public class Pais {
     private String capital;
 
 
-    public Pais() {
+    public Pais(String nombre, String isoCode, int poblacion, String capital) {
+        this.nombre = nombre;
+        this.isoCode = isoCode;
+        this.poblacion = poblacion;
+        this.capital = capital;
     }
 
 

@@ -7,7 +7,9 @@ public class Estado {
     private String nombre;
 
 
-    public Estado() {
+    public Estado(int idPais, String nombre) {
+        this.idPais = idPais;
+        this.nombre = nombre;
     }
 
 
