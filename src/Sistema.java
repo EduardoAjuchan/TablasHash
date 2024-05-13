@@ -116,7 +116,7 @@ public class Sistema {
     long endTime = System.nanoTime();
     long elapsedTime = endTime - startTime;
 
-    System.out.println("Tiempo de búsqueda de país: " + elapsedTime / 1000000 + " milisegundos");
+    System.out.println("Tiempo de búsqueda de país: " + elapsedTime / 1000000.0 + " milisegundos");
 
     if (pais != null) {
         System.out.println("País encontrado: " + pais.getNombre());
@@ -158,71 +158,93 @@ public class Sistema {
     }
 }
     public Estado buscarEstado(int idEstado) {
-    long startTime = System.nanoTime();
+        long startTime = System.nanoTime();
 
-    Estado estado = estadosMap.get(idEstado);
+        Estado estado = estadosMap.get(idEstado);
 
-    long endTime = System.nanoTime();
-    long elapsedTime = endTime - startTime;
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
 
-    System.out.println("Tiempo de búsqueda de estado: " + elapsedTime / 1000000 + " milisegundos");
+        System.out.println("Tiempo de búsqueda de estado: " + elapsedTime / 1000000.0 + " milisegundos");
 
-    if (estado != null) {
-        System.out.println("Estado encontrado: " + estado.getNombre());
-        // Buscar el país asociado con el estado
-        for (Pais pais : paisesMap.values()) {
-            if (pais.getId() == estado.getIdPais()) {
-                System.out.println("Pertenece al país: " + pais.getNombre());
-                break;
+        if (estado != null) {
+            System.out.println("Estado encontrado: " + estado.getNombre());
+            // Buscar el país asociado con el estado
+            Pais pais = null;
+            for (Pais p : paisesMap.values()) {
+                if (p.getId() == estado.getIdPais()) {
+                    pais = p;
+                    System.out.println("Pertenece al país: " + pais.getNombre());
+                    break;
+                }
             }
-        }
-        // Buscar los municipios asociados con el estado
-        System.out.println("Municipios:");
-        for (Municipio municipio : municipiosMap.values()) {
-            if (municipio.getIdEstado() == estado.getId()) {
-                System.out.println(" - " + municipio.getNombre());
+            // Buscar los municipios asociados con el estado
+            System.out.println("Municipios:");
+            for (Municipio municipio : municipiosMap.values()) {
+                if (municipio.getIdEstado() == estado.getId()) {
+                    System.out.println(" - " + municipio.getNombre());
+                }
             }
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("¿Desea exportar los resultados a un archivo Excel? (S/N)");
+            String respuesta = scanner.nextLine();
+            if (respuesta.equalsIgnoreCase("S")) {
+                String filePath = "C:\\Users\\eduar\\Desktop\\Prueba\\resultadosEstado.xlsx";
+                exportarResultadosBusquedaEstado(filePath, estado, pais, elapsedTime);
+            }
+        } else {
+            System.out.println("Estado no encontrado.");
         }
-    } else {
-        System.out.println("Estado no encontrado.");
+
+        return estado;
     }
 
-    return estado;
-}
-
     public Municipio buscarMunicipio(int idMunicipio) {
-    long startTime = System.nanoTime();
+        long startTime = System.nanoTime();
 
-    Municipio municipio = municipiosMap.get(idMunicipio);
+        Municipio municipio = municipiosMap.get(idMunicipio);
 
-    long endTime = System.nanoTime();
-    long elapsedTime = endTime - startTime;
+        long endTime = System.nanoTime();
+        long elapsedTime = endTime - startTime;
 
-    System.out.println("Tiempo de búsqueda de municipio: " + elapsedTime / 1000000 + " milisegundos");
+        System.out.println("Tiempo de búsqueda de municipio: " + elapsedTime / 1000000.0 + " milisegundos");
 
-    if (municipio != null) {
-        System.out.println("Municipio encontrado: " + municipio.getNombre());
-        // Buscar el estado asociado con el municipio
-        for (Estado estado : estadosMap.values()) {
-            if (estado.getId() == municipio.getIdEstado()) {
-                System.out.println("Pertenece al estado: " + estado.getNombre());
-                // Buscar el país asociado con el estado
-                for (Pais pais : paisesMap.values()) {
-                    if (pais.getId() == estado.getIdPais()) {
+        if (municipio != null) {
+            System.out.println("Municipio encontrado: " + municipio.getNombre());
+            // Buscar el estado asociado con el municipio
+            Estado estado = null;
+            for (Estado e : estadosMap.values()) {
+                if (e.getId() == municipio.getIdEstado()) {
+                    estado = e;
+                    System.out.println("Pertenece al estado: " + estado.getNombre());
+                    break;
+                }
+            }
+            // Buscar el país asociado con el estado
+            Pais pais = null;
+            if (estado != null) {
+                for (Pais p : paisesMap.values()) {
+                    if (p.getId() == estado.getIdPais()) {
+                        pais = p;
                         System.out.println("Pertenece al país: " + pais.getNombre());
                         break;
                     }
                 }
-                break;
             }
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("¿Desea exportar los resultados a un archivo Excel? (S/N)");
+            String respuesta = scanner.nextLine();
+            if (respuesta.equalsIgnoreCase("S")) {
+                String filePath = "C:\\Users\\eduar\\Desktop\\Prueba\\resultadosMunicipio.xlsx";
+                exportarResultadosBusquedaMunicipio(filePath, municipio, estado, pais, elapsedTime);
+            }
+        } else {
+            System.out.println("Municipio no encontrado.");
         }
-    } else {
-        System.out.println("Municipio no encontrado.");
-    }
 
-    return municipio;
-}
-  public void exportarResultadosBusqueda(String filePath, Pais pais) {
+        return municipio;
+    }
+ public void exportarResultadosBusqueda(String filePath, Pais pais) {
     Workbook workbook = new XSSFWorkbook();
     Sheet sheet = workbook.createSheet("Resultados de la búsqueda");
 
@@ -237,21 +259,29 @@ public class Sistema {
     for (Map.Entry<Integer, Estado> estadoEntry : estadosMap.entrySet()) {
         Estado estado = estadoEntry.getValue();
         if (estado.getIdPais() == pais.getId()) {
+            long startTime = System.nanoTime();
+            boolean hasMunicipios = false;
             for (Map.Entry<Integer, Municipio> municipioEntry : municipiosMap.entrySet()) {
                 Municipio municipio = municipioEntry.getValue();
                 if (municipio.getIdEstado() == estado.getId()) {
-                    long startTime = System.nanoTime();
-                    // Aquí es donde realizarías la búsqueda
-                    long endTime = System.nanoTime();
-                    long elapsedTime = endTime - startTime;
-
                     Row row = sheet.createRow(rowNum++);
                     row.createCell(0).setCellValue(pais.getNombre());
                     row.createCell(1).setCellValue(estado.getNombre());
                     row.createCell(2).setCellValue(municipio.getNombre());
-                    row.createCell(3).setCellValue(elapsedTime / 1000000.0); // Tiempo de búsqueda en milisegundos
+                    hasMunicipios = true;
                 }
             }
+            long endTime = System.nanoTime();
+            long elapsedTime = endTime - startTime;
+            if (!hasMunicipios) {
+                // Si el estado no tiene municipios, aún así agregamos una fila para el estado
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(pais.getNombre());
+                row.createCell(1).setCellValue(estado.getNombre());
+                row.createCell(2).setCellValue("N/A"); // No hay municipios para este estado
+            }
+            // Tiempo de búsqueda para este estado
+            sheet.getRow(rowNum - 1).createCell(3).setCellValue(elapsedTime / 1000000.0);
         }
     }
 
@@ -261,6 +291,68 @@ public class Sistema {
         e.printStackTrace();
     }
 }
+    public void exportarResultadosBusquedaEstado(String filePath, Estado estado, Pais pais, long elapsedTime) {
+    Workbook workbook = new XSSFWorkbook();
+    Sheet sheet = workbook.createSheet("Resultados de la búsqueda");
+
+    // Crear encabezados
+    Row headerRow = sheet.createRow(0);
+    headerRow.createCell(0).setCellValue("País");
+    headerRow.createCell(1).setCellValue("Estado");
+    headerRow.createCell(2).setCellValue("Municipio");
+    headerRow.createCell(3).setCellValue("Tiempo de búsqueda (ms)");
+
+    int rowNum = 1;
+    boolean hasMunicipios = false;
+    for (Map.Entry<Integer, Municipio> municipioEntry : municipiosMap.entrySet()) {
+        Municipio municipio = municipioEntry.getValue();
+        if (municipio.getIdEstado() == estado.getId()) {
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(pais.getNombre());
+            row.createCell(1).setCellValue(estado.getNombre());
+            row.createCell(2).setCellValue(municipio.getNombre());
+            row.createCell(3).setCellValue(elapsedTime / 1000000.0); // Tiempo de búsqueda en milisegundos
+            hasMunicipios = true;
+        }
+    }
+    if (!hasMunicipios) {
+        // Si el estado no tiene municipios, aún así agregamos una fila para el estado
+        Row row = sheet.createRow(rowNum++);
+        row.createCell(0).setCellValue(pais.getNombre());
+        row.createCell(1).setCellValue(estado.getNombre());
+        row.createCell(2).setCellValue("N/A"); // No hay municipios para este estado
+        row.createCell(3).setCellValue(elapsedTime / 1000000.0); // Tiempo de búsqueda en milisegundos
+    }
+
+    try (FileOutputStream fos = new FileOutputStream(filePath)) {
+        workbook.write(fos);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
+    public void exportarResultadosBusquedaMunicipio(String filePath, Municipio municipio, Estado estado, Pais pais, long elapsedTime) {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("Resultados de la búsqueda");
+
+        // Crear encabezados
+        Row headerRow = sheet.createRow(0);
+        headerRow.createCell(0).setCellValue("País");
+        headerRow.createCell(1).setCellValue("Estado");
+        headerRow.createCell(2).setCellValue("Municipio");
+        headerRow.createCell(3).setCellValue("Tiempo de búsqueda (ms)");
+
+        Row row = sheet.createRow(1);
+        row.createCell(0).setCellValue(pais.getNombre());
+        row.createCell(1).setCellValue(estado.getNombre());
+        row.createCell(2).setCellValue(municipio.getNombre());
+        row.createCell(3).setCellValue(elapsedTime / 1000000.0); // Tiempo de búsqueda en milisegundos
+
+        try (FileOutputStream fos = new FileOutputStream(filePath)) {
+            workbook.write(fos);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public String toString() {
         return "Sistema{" +
