@@ -16,7 +16,7 @@ public class Pais {
         this.capital = capital;
     }
 
-
+//Constructor
     public Pais(int id, String nombre, String isoCode, int poblacion, String capital) {
         this.id = id;
         this.nombre = nombre;
@@ -25,7 +25,7 @@ public class Pais {
         this.capital = capital;
     }
 
-
+//Getters y Setters
     public int getId() {
         return id;
     }

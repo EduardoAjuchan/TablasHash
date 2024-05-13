@@ -12,14 +12,14 @@ public class Estado {
         this.nombre = nombre;
     }
 
-
+//Constructor
     public Estado(int id, int idPais, String nombre) {
         this.id = id;
         this.idPais = idPais;
         this.nombre = nombre;
     }
 
-
+//Getters y Setters
     public int getId() {
         return id;
     }

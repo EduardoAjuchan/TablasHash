@@ -2,6 +2,7 @@ import java.util.Scanner;
 
 
 public class Main {
+    //Se trae la información de la base de datos a través del método cargarInformacionDesdeBD
     public static void main(String[] args) {
 
         Sistema sistema = new Sistema();
@@ -21,7 +22,7 @@ private static void mostrarMenuBusqueda(Sistema sistema) {
         System.out.println("4. Salir");
 
         opcion = scanner.nextInt();
-
+//Casos para buscar por país, estado, municipio o salir
         switch (opcion) {
             case 1:
                 System.out.println("Ingrese el ISO code del país:");

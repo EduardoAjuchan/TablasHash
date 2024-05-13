@@ -13,14 +13,14 @@ public class Municipio {
         this.nombre = nombre;
     }
 
-
+//Constructor
     public Municipio(int id, int idEstado, String nombre) {
         this.id = id;
         this.idEstado = idEstado;
         this.nombre = nombre;
     }
 
-
+//Getters y Setters
     public int getId() {
         return id;
     }
