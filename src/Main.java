@@ -8,7 +8,7 @@ public class Main {
         sistema.cargarInformacionDesdeBD();
         mostrarMenuBusqueda(sistema);
     }
-    private static void mostrarMenuBusqueda(Sistema sistema) {
+private static void mostrarMenuBusqueda(Sistema sistema) {
     Scanner scanner = new Scanner(System.in);
     int opcion;
     String continuar;
@@ -18,9 +18,8 @@ public class Main {
         System.out.println("1. Búsqueda por país");
         System.out.println("2. Búsqueda por estado");
         System.out.println("3. Búsqueda por municipio");
-        System.out.println("4. Cargar archivo");
+        System.out.println("4. Salir");
 
-        System.out.println("5. Salir");
         opcion = scanner.nextInt();
 
         switch (opcion) {
@@ -54,8 +53,7 @@ public class Main {
                     System.out.println("Municipio no encontrado.");
                 }
                 break;
-
-            case 5:
+            case 4:
                 System.out.println("Saliendo del programa...");
                 return;
             default:
